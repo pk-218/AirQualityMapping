@@ -35,14 +35,7 @@ export class MapContainer extends Component {
     );
   }
 }
-// mine
-// 'AIzaSyAYNFzgKxlIG5cuvA20E8eoMrx_OiwoQy4'
-// free but developer mode
-// 'AIzaSyAyesbQMyKVVbBgKVi2g6VX7mop2z96jBo'
-// not working
-// 'AIzaSyCPvegTVYEK30o7eLBed8y1ikDlPpW0wr4'
-// 'AIzaSyBLVHqBpK4pTUHkxRLctTj6a3nHrt1d-uI'
-// below one works
+
 export default GoogleApiWrapper({
   apiKey: API_KEY
 })(MapContainer);

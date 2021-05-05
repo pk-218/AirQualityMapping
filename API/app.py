@@ -4,7 +4,7 @@ import requests
 
 
 # ambee API key
-# Shhhh! Dont see it.. Its inda private
+# Shhhh! Dont see it.. It's kinda private
 API_KEY = 'trJxcgJuPW1bBeVJZGI1Szb30RJenz9sUTIZKh30'
 
 app = Flask(__name__)

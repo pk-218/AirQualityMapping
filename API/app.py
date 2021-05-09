@@ -95,6 +95,7 @@ def most_polluted():
 
 
 
+#defaulting search by city
 @app.route('/', methods=['GET' , 'POST'])
 def index():
     if request.method == 'POST':

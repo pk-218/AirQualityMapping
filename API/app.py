@@ -1,5 +1,5 @@
 # imports
-from flask import Flask
+from flask import Flask , render_template , request
 import requests
 
 
@@ -10,9 +10,6 @@ API_KEY = 'trJxcgJuPW1bBeVJZGI1Szb30RJenz9sUTIZKh30'
 app = Flask(__name__)
 
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
 
 
 # returns AQI bases on lat and lng
@@ -47,7 +44,7 @@ def by_postal_code(postalCode, countryCode="IN"):
     return response.text
 
 #returns AQI of city
-@app.route('/by-city/<cityName')
+@app.route('/by-city/<cityName>')
 def by_city_name(cityName):
     url = "https://api.ambeedata.com/latest/by-city"
     querystring = {"city":cityName}
@@ -70,10 +67,10 @@ def by_country_name(countryName):
     response = requests.request("GET", url, headers=headers, params=querystring)
     return response.text
 
-@app.route('/historical/by-lat-lng/<lat>/<lng>/<from>/<to>')
-def historical(lat, lng, from, to):
+@app.route('/historical/by-lat-lng/<lat>/<lng>/<from_>/<to>')
+def historical(lat, lng, from_, to):
     url = "https://api.ambeedata.com/history/by-lat-lng"
-    querystring = {"lat":float(lat), "lng":float(lng) ,"from": from + " 12:16:44","to": to + " 12:16:44"}
+    querystring = {"lat":float(lat), "lng":float(lng) ,"from_": from_ + " 12:16:44","to": to + " 12:16:44"}
     headers = {
         'x-api-key': API_KEY,
         'Content-type': "application/json"
@@ -81,10 +78,10 @@ def historical(lat, lng, from, to):
     response = requests.request("GET", url, headers=headers, params=querystring)
     return response.text
 
-@app.route('/historical/by-postalCode/<postalCode>/<from>/<to>')
-def historical_postal(postalCode, from , to):
+@app.route('/historical/by-postalCode/<postalCode>/<from_>/<to>')
+def historical_postal(postalCode, from_ , to):
     url = "https://api.ambeedata.com/latest/by-postal-code"
-    querystring = {"postalCode":postalCode,"countryCode":"IN","from": from + " 12:16:44","to": to + " 12:16:44"}
+    querystring = {"postalCode":postalCode,"countryCode":"IN","from_": from_ + " 12:16:44","to": to + " 12:16:44"}
     headers = {
         'x-api-key': API_KEY,
         'Content-type': "application/json"
@@ -95,3 +92,16 @@ def historical_postal(postalCode, from , to):
 @app.route('/most-polluted')
 def most_polluted():
     url = "https://api.ambeedata.com/latest/by-order/worst"
+
+
+
+@app.route('/', methods=['GET' , 'POST'])
+def index():
+    if request.method == 'POST':
+        city = request.form.get('cityname')
+        responce = by_city_name(city)
+        return responce
+    return render_template('index.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)

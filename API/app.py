@@ -1,11 +1,13 @@
 # imports
 from flask import Flask, render_template, request, jsonify
 import requests
-
-from config import API_KEY
-from utilities import restrict
+import os
+from flask_cors import CORS, cross_origin
+from utilities import *
 
 app = Flask(__name__)
+CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 BASE_URL = 'https://api.ambeedata.com'
 
@@ -23,23 +25,33 @@ def index():
 
 
 # Selected top 25 cities according to their population
-city_list = ["Mumbai", 'Delhi', 'bengalore', 'chennai', 'pune']
+city_list = ["Mumbai", 'Delhi', 'bengalore', 'hyderabad','Ahmedabad','chennai','kolkata','surat', 'pune' , 'Jaipur','Lucknow','Kanpur','Nagpur','Indore','Thane','Bhopal','Visakhapatnam','Salem','Patna','Vadodara']
 
 # route to return required data of all above cities in single
 # JSON object
 
+#defaulitng some values
+result_ = getInitial_Data()
 
-@app.route('/get-cities-data')
+
+@app.route('/get-cities-data/')
+@cross_origin()
 def get_cities_data():
-    '''returns required data of all cities specified'''
+    '''returns fresh required data of all cities specified'''
 
-    result = {}
+    return jsonify(result_)
+
+@app.route('/get-cities-data/refresh')
+def get_cities_data_refreshed():
+    '''returns fresh required data of all cities specified'''
+
+    # result_ = {}
     for city in city_list:
         responce = by_city_name(city)
         responce = restrict(responce)
-        result.update({city: responce})
+        result_.update({city: responce})
 
-    return jsonify(result)
+    return jsonify(result_)
 
 
 # returns AQI bases on lat and lng
@@ -53,7 +65,7 @@ def by_lat_lng(lat, lng):
     url = BASE_URL + "/latest/by-lat-lng"
     querystring = {"lat": float(lat), "lng": float(lng)}
     headers = {
-        'x-api-key': API_KEY,
+        'x-api-key': get_API_key(),
         'Content-type': "application/json"
     }
     response = requests.request(
@@ -75,7 +87,7 @@ def by_postal_code(postalCode, countryCode="IN"):
     url = BASE_URL + "/latest/by-postal-code"
     querystring = {"postalCode": int(postalCode), "countryCode": countryCode}
     headers = {
-        'x-api-key': API_KEY,
+        'x-api-key': get_API_key(),
         'Content-type': "application/json"
     }
     response = requests.request("GET", url, headers=headers, params=querystring)
@@ -93,7 +105,7 @@ def by_city_name(cityName):
     url = BASE_URL + "/latest/by-city"
     querystring = {"city": cityName}
     headers = {
-        'x-api-key': API_KEY,
+        'x-api-key': get_API_key(),
         'Content-type': "application/json"
     }
     response = requests.request(
@@ -114,7 +126,7 @@ def by_country_name(countryName="IN"):
     url = BASE_URL + "/latest/by-country-code"
     querystring = {"countryCode": countryName}
     headers = {
-        'x-api-key': API_KEY,
+        'x-api-key': get_API_key(),
         'Content-type': "application/json"
     }
     response = requests.request(
@@ -134,7 +146,7 @@ def historical(lat, lng, from_, to):
     querystring = {"lat": float(lat), "lng": float(
         lng), "from_": from_ + " 12:16:44", "to": to + " 12:16:44"}
     headers = {
-        'x-api-key': API_KEY,
+        'x-api-key': get_API_key(),
         'Content-type': "application/json"
     }
     response = requests.request(
@@ -154,7 +166,7 @@ def historical_postal(postalCode, from_, to):
     querystring = {"postalCode": postalCode, "countryCode": "IN",
                    "from_": from_ + " 12:16:44", "to": to + " 12:16:44"}
     headers = {
-        'x-api-key': API_KEY,
+        'x-api-key': get_API_key(),
         'Content-type': "application/json"
     }
     response = requests.request(
@@ -170,4 +182,6 @@ def historical_postal(postalCode, from_, to):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    # app.run(debug=True)
+    app.run(host='0.0.0.0', port=port)

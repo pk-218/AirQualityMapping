@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Map, Marker, InfoWindow } from 'google-maps-react';
+import { Map, Marker, InfoWindow, Polygon } from 'google-maps-react';
 
 import { Navigation } from './Navigation';
 import { MarkerInfoList } from './MarkerInfoList';
@@ -35,6 +35,12 @@ export class MapContainer extends Component {
   	};
   
 	render() {
+		const triangleCoords = [
+			{lat: 28.707339, lng: 77.090242},
+			{lat: 26.457218, lng: 80.32897},
+			{lat: 26.913446, lng: 75.782196},
+			{lat: 28.707339, lng: 77.090242}
+		  ];
  	    return (
     		<div>
         		<Navigation />
@@ -43,6 +49,13 @@ export class MapContainer extends Component {
             		zoom={6}
             		style={mapStyles}
             		initialCenter={ { lat: 23.2599, lng: 77.4126 } } >
+					 <Polygon
+          				paths={triangleCoords}
+          				strokeColor="#1EAAF1"
+          				strokeOpacity={0.9}
+          				strokeWeight={3}
+						fillColor="#0000FF"
+						fillOpacity={0.35} />
 				
 					<Marker
 						onClick={this.onMarkerClick}
@@ -451,53 +464,3 @@ export class MapContainer extends Component {
 	}
 }
 export default MapContainer;
-
-
-// class Markers extends Component {
-// 	render() {
-// 		return (
-// 			<>
-// 			<Marker
-// 				onClick={this.props.onMarkerClick}
-// 				position={{lat: this.props.lat, lng: this.props.lng}} />
-// 			<InfoWindow
-// 				marker={this.props.state.activeMarker}
-// 				visible={this.props.state.showingInfoWindow}
-// 				onClose={this.props.onClose} >
-// 				<div>
-// 					<p>AQI: {this.props.AQI}</p>
-// 					<p>{this.props.status}</p>
-// 					<p>PM10: {this.props.PM10}</p>
-// 					<p>PM 2.5 {this.props.PM25}</p>
-// 				</div>
-// 			</InfoWindow>
-// 			</>
-// 		)
-// 	}
-// }
-
-
-// ISSUE: Unable to use Arrays.map() to render multiple components due to mapCenter prop being rendered on the DOM
-// mapCenter is not a DOM element, it is part of one of the components from 'google-maps-react' library
- 
-{/* <div>
-{data.map((info, index) => { return (
-<div>
-<Marker
-	onClick={onMarkerClick}
-	position={{ lat: info.lat, lng: info.lng }} />
-<InfoWindow
-	marker={activeMarker}
-	visible={showingInfoWindow}
-	onClose={onClose} >
-	<div>
-		<h5>{info.name}</h5>
-		<p>AQI: {info.AQI}</p>
-			<p>Status: {info.status}</p>
-		<p>PM10: {info.PM10}</p>
-		<p>PM 2.5: {info.PM25}</p>
-	</div>
-</InfoWindow>
-</div>
-)})}
-</div> */}

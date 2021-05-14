@@ -76,8 +76,8 @@ export const data = [
             "AQI": 61,
             "PM10": 76.162,
             "PM25": 4.9,
-            "lat": 42.5151,
-            "lng": -70.9003,
+            "lat": 11.6643,
+            "lng": 78.1460,
             "status": "Moderate"
         },
         {
